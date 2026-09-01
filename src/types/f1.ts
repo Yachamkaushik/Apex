@@ -90,6 +90,16 @@ export interface RaceResult {
   }
 }
 
+export interface QualifyingResult {
+  number: string
+  position: string
+  Driver: Driver
+  Constructor: Constructor
+  Q1?: string
+  Q2?: string
+  Q3?: string
+}
+
 interface MRDataBase {
   xmlns: string
   series: string
@@ -135,5 +145,20 @@ export interface RaceResultsResponse extends MRDataBase {
     season: string
     round: string
     Races: (Race & { Results: RaceResult[] })[]
+  }
+}
+
+export interface SprintResponse extends MRDataBase {
+  RaceTable: {
+    season: string
+    Races: (Race & { SprintResults: RaceResult[] })[]
+  }
+}
+
+export interface QualifyingResponse extends MRDataBase {
+  RaceTable: {
+    season: string
+    round: string
+    Races: (Race & { QualifyingResults: QualifyingResult[] })[]
   }
 }

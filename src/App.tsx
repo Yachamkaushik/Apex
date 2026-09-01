@@ -1,5 +1,6 @@
 import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
+import { ConstructorDetail } from './pages/ConstructorDetail'
 import { Dashboard } from './pages/Dashboard'
 import { DriverDetail } from './pages/DriverDetail'
 import { Drivers } from './pages/Drivers'
@@ -29,6 +30,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/standings" element={<Standings />} />
+          <Route path="/constructors/:constructorId" element={<ConstructorDetail />} />
           <Route path="/races" element={<Races />} />
           <Route path="/races/:round" element={<RaceDetail />} />
           <Route path="/drivers" element={<Drivers />} />

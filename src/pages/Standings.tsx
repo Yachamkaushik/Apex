@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Bar, BarChart, Cell, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { getConstructorStandings, getDriverStandings, getSeasonResults } from '../api/f1'
+import { getConstructorStandings, getDriverStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
 import { useAsync } from '../hooks/useAsync'
@@ -16,6 +16,7 @@ export function Standings() {
   const drivers = useAsync(() => getDriverStandings('current'), [])
   const constructors = useAsync(() => getConstructorStandings('current'), [])
   const seasonResults = useAsync(() => getSeasonResults('current'), [])
+  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
 
   const season = drivers.data?.StandingsTable.season
 
@@ -35,8 +36,11 @@ export function Standings() {
   }))
 
   const progression = useMemo(
-    () => (seasonResults.data ? buildPointsProgression(seasonResults.data, 6) : null),
-    [seasonResults.data],
+    () =>
+      seasonResults.data
+        ? buildPointsProgression(seasonResults.data, 6, sprintPoints.data ?? undefined)
+        : null,
+    [seasonResults.data, sprintPoints.data],
   )
 
   return (
@@ -190,7 +194,7 @@ export function Standings() {
                   <td>{row.position}</td>
                   <td>
                     <TeamDot constructorId={row.Constructor.constructorId} />
-                    {row.Constructor.name}
+                    <Link to={`/constructors/${row.Constructor.constructorId}`}>{row.Constructor.name}</Link>
                   </td>
                   <td>{row.wins}</td>
                   <td>{row.points}</td>

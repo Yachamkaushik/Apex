@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { getDriverStandings, getSeasonResults } from '../api/f1'
+import { getDriverStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
 import { useAsync } from '../hooks/useAsync'
@@ -12,6 +12,7 @@ export function DriverDetail() {
 
   const standings = useAsync(() => getDriverStandings('current'), [])
   const seasonResults = useAsync(() => getSeasonResults('current'), [])
+  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
 
   const status = standings.status === 'error' || seasonResults.status === 'error'
     ? 'error'
@@ -30,20 +31,23 @@ export function DriverDetail() {
     return seasonResults.data.flatMap((race) => {
       const result = race.Results.find((r) => r.Driver.driverId === driverId)
       if (!result) return []
-      cumulative += Number(result.points)
+      const sprint = sprintPoints.data?.get(race.round)?.get(driverId ?? '') ?? 0
+      const points = Number(result.points) + sprint
+      cumulative += points
       return [
         {
           round: Number(race.round),
           raceName: race.raceName,
           position: result.position,
           grid: result.grid,
-          points: Number(result.points),
+          points,
+          sprint,
           cumulative,
           status: result.status,
         },
       ]
     })
-  }, [seasonResults.data, driverId])
+  }, [seasonResults.data, sprintPoints.data, driverId])
 
   const teamColor = getTeamColor(standing?.Constructors[0]?.constructorId ?? '')
 
