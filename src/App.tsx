@@ -1,4 +1,9 @@
+import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
+import { Dashboard } from './pages/Dashboard'
+import { Drivers } from './pages/Drivers'
+import { Races } from './pages/Races'
+import { Standings } from './pages/Standings'
 
 function App() {
   return (
@@ -9,20 +14,22 @@ function App() {
           <span>F1 Analytics</span>
         </div>
         <nav>
-          <a className="active" href="#">
+          <NavLink to="/" end>
             Dashboard
-          </a>
-          <a href="#">Standings</a>
-          <a href="#">Races</a>
-          <a href="#">Drivers</a>
+          </NavLink>
+          <NavLink to="/standings">Standings</NavLink>
+          <NavLink to="/races">Races</NavLink>
+          <NavLink to="/drivers">Drivers</NavLink>
         </nav>
       </header>
 
       <main className="app-main">
-        <div className="placeholder">
-          <h1>Apex is warming up</h1>
-          <p>The dashboard shell is in place — race data and charts land next.</p>
-        </div>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/standings" element={<Standings />} />
+          <Route path="/races" element={<Races />} />
+          <Route path="/drivers" element={<Drivers />} />
+        </Routes>
       </main>
 
       <footer className="app-footer">Apex F1 Analytics Dashboard</footer>

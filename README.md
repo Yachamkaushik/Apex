@@ -2,6 +2,12 @@
 
 An F1 analytics dashboard, built with React + TypeScript (Vite).
 
+## Tech stack
+
+- React 19
+- TypeScript
+- Vite
+
 ## Getting started
 
 ```bash
@@ -15,3 +21,7 @@ npm run dev
 - `npm run build` — type-check and build for production
 - `npm run preview` — preview the production build locally
 - `npm run lint` — lint the project
+
+## Deployment
+
+Deployed on [Vercel](https://vercel.com) — pushes to `main` build and deploy automatically. Framework preset: Vite.
