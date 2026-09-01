@@ -125,30 +125,32 @@ export function DriverDetail() {
               </div>
             )}
 
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Rd</th>
-                  <th>Race</th>
-                  <th>Grid</th>
-                  <th>Finish</th>
-                  <th>Points</th>
-                </tr>
-              </thead>
-              <tbody>
-                {races.map((r) => (
-                  <tr key={r.round}>
-                    <td>{r.round}</td>
-                    <td>
-                      <Link to={`/races/${r.round}`}>{r.raceName}</Link>
-                    </td>
-                    <td>{r.grid}</td>
-                    <td>{r.status === 'Finished' || r.status.includes('Lap') ? r.position : r.status}</td>
-                    <td>{r.points}</td>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Rd</th>
+                    <th>Race</th>
+                    <th>Grid</th>
+                    <th>Finish</th>
+                    <th>Points</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {races.map((r) => (
+                    <tr key={r.round}>
+                      <td>{r.round}</td>
+                      <td>
+                        <Link to={`/races/${r.round}`}>{r.raceName}</Link>
+                      </td>
+                      <td>{r.grid}</td>
+                      <td>{r.status === 'Finished' || r.status.includes('Lap') ? r.position : r.status}</td>
+                      <td>{r.points}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </AsyncBoundary>

@@ -25,7 +25,8 @@ export function RaceDetail() {
       constructorId: r.Constructor.constructorId,
     }))
 
-  // Qualifying position vs. race finish — points below the diagonal gained places.
+  // Qualifying position vs. race finish. The Y axis is reversed (P1 at top),
+  // so points above the diagonal gained places.
   const paceData = useMemo(() => {
     const quali = qualifying.data?.RaceTable.Races[0]?.QualifyingResults ?? []
     if (quali.length === 0) return []
@@ -145,39 +146,41 @@ export function RaceDetail() {
               </div>
             )}
 
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Driver</th>
-                  <th>Team</th>
-                  <th>Grid</th>
-                  <th>Laps</th>
-                  <th>Time / Status</th>
-                  <th>Points</th>
-                </tr>
-              </thead>
-              <tbody>
-                {results.map((r) => (
-                  <tr key={r.Driver.driverId}>
-                    <td>{r.position}</td>
-                    <td>
-                      <Link to={`/drivers/${r.Driver.driverId}`}>
-                        {r.Driver.givenName} {r.Driver.familyName}
-                      </Link>
-                    </td>
-                    <td>
-                      <TeamDot constructorId={r.Constructor.constructorId} />
-                      <Link to={`/constructors/${r.Constructor.constructorId}`}>{r.Constructor.name}</Link>
-                    </td>
-                    <td>{r.grid}</td>
-                    <td>{r.laps}</td>
-                    <td>{r.Time?.time ?? r.status}</td>
-                    <td>{r.points}</td>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Driver</th>
+                    <th>Team</th>
+                    <th>Grid</th>
+                    <th>Laps</th>
+                    <th>Time / Status</th>
+                    <th>Points</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {results.map((r) => (
+                    <tr key={r.Driver.driverId}>
+                      <td>{r.position}</td>
+                      <td>
+                        <Link to={`/drivers/${r.Driver.driverId}`}>
+                          {r.Driver.givenName} {r.Driver.familyName}
+                        </Link>
+                      </td>
+                      <td>
+                        <TeamDot constructorId={r.Constructor.constructorId} />
+                        <Link to={`/constructors/${r.Constructor.constructorId}`}>{r.Constructor.name}</Link>
+                      </td>
+                      <td>{r.grid}</td>
+                      <td>{r.laps}</td>
+                      <td>{r.Time?.time ?? r.status}</td>
+                      <td>{r.points}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </AsyncBoundary>

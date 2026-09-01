@@ -126,35 +126,37 @@ export function Standings() {
             </ResponsiveContainer>
           </div>
 
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Driver</th>
-                <th>Team</th>
-                <th>Wins</th>
-                <th>Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              {driverRows.map((row) => (
-                <tr key={row.Driver.driverId}>
-                  <td>{row.position}</td>
-                  <td>
-                    <Link to={`/drivers/${row.Driver.driverId}`}>
-                      {row.Driver.givenName} {row.Driver.familyName}
-                    </Link>
-                  </td>
-                  <td>
-                    <TeamDot constructorId={row.Constructors[0]?.constructorId ?? ''} />
-                    {row.Constructors.map((c) => c.name).join(' / ')}
-                  </td>
-                  <td>{row.wins}</td>
-                  <td>{row.points}</td>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Driver</th>
+                  <th>Team</th>
+                  <th>Wins</th>
+                  <th>Points</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {driverRows.map((row) => (
+                  <tr key={row.Driver.driverId}>
+                    <td>{row.position}</td>
+                    <td>
+                      <Link to={`/drivers/${row.Driver.driverId}`}>
+                        {row.Driver.givenName} {row.Driver.familyName}
+                      </Link>
+                    </td>
+                    <td>
+                      <TeamDot constructorId={row.Constructors[0]?.constructorId ?? ''} />
+                      {row.Constructors.map((c) => c.name).join(' / ')}
+                    </td>
+                    <td>{row.wins}</td>
+                    <td>{row.points}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </AsyncBoundary>
       )}
 
@@ -179,29 +181,31 @@ export function Standings() {
             </ResponsiveContainer>
           </div>
 
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Constructor</th>
-                <th>Wins</th>
-                <th>Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              {constructorRows.map((row) => (
-                <tr key={row.Constructor.constructorId}>
-                  <td>{row.position}</td>
-                  <td>
-                    <TeamDot constructorId={row.Constructor.constructorId} />
-                    <Link to={`/constructors/${row.Constructor.constructorId}`}>{row.Constructor.name}</Link>
-                  </td>
-                  <td>{row.wins}</td>
-                  <td>{row.points}</td>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Constructor</th>
+                  <th>Wins</th>
+                  <th>Points</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {constructorRows.map((row) => (
+                  <tr key={row.Constructor.constructorId}>
+                    <td>{row.position}</td>
+                    <td>
+                      <TeamDot constructorId={row.Constructor.constructorId} />
+                      <Link to={`/constructors/${row.Constructor.constructorId}`}>{row.Constructor.name}</Link>
+                    </td>
+                    <td>{row.wins}</td>
+                    <td>{row.points}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </AsyncBoundary>
       )}
     </div>

@@ -1,24 +1,79 @@
-import { getDriverStandings, getSchedule } from '../api/f1'
+import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import { Bar, BarChart, Cell, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  getConstructorStandings,
+  getDriverStandings,
+  getSchedule,
+  getSeasonResults,
+  getSprintPointsByRound,
+} from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
 import { useAsync } from '../hooks/useAsync'
+import { buildPointsProgression } from '../lib/pointsProgression'
+import { getTeamColor } from '../lib/teamColors'
+
+/** Days between today and an ISO date string, rounded up. */
+function daysUntil(isoDate: string): number {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const target = new Date(`${isoDate}T00:00:00`)
+  return Math.ceil((target.getTime() - today.getTime()) / 86_400_000)
+}
 
 export function Dashboard() {
   const drivers = useAsync(() => getDriverStandings('current'), [])
+  const constructors = useAsync(() => getConstructorStandings('current'), [])
   const schedule = useAsync(() => getSchedule('current'), [])
+  const seasonResults = useAsync(() => getSeasonResults('current'), [])
+  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
 
-  const status = drivers.status === 'success' && schedule.status === 'success' ? 'success' : drivers.status === 'error' || schedule.status === 'error' ? 'error' : 'loading'
-  const error = drivers.error ?? schedule.error
+  const core = [drivers, constructors, schedule]
+  const status = core.some((s) => s.status === 'error')
+    ? 'error'
+    : core.every((s) => s.status === 'success')
+      ? 'success'
+      : 'loading'
+  const error = drivers.error ?? constructors.error ?? schedule.error
 
-  const leader = drivers.data?.StandingsTable.StandingsLists[0]?.DriverStandings[0]
+  const season = drivers.data?.StandingsTable.season
+  const driverRows = drivers.data?.StandingsTable.StandingsLists[0]?.DriverStandings ?? []
+  const constructorRows = constructors.data?.StandingsTable.StandingsLists[0]?.ConstructorStandings ?? []
+
+  const leader = driverRows[0]
+  const runnerUp = driverRows[1]
+  const gap = leader && runnerUp ? Number(leader.points) - Number(runnerUp.points) : null
+
+  const constructorLeader = constructorRows[0]
+
   const today = new Date().toISOString().slice(0, 10)
-  const nextRace = schedule.data?.RaceTable.Races.find((race) => race.date >= today)
+  const races = schedule.data?.RaceTable.Races ?? []
+  const nextRace = races.find((race) => race.date >= today)
+  const completed = races.filter((race) => race.date < today).length
+
+  const lastRace = seasonResults.data?.[seasonResults.data.length - 1]
+  const podium = lastRace?.Results.slice(0, 3) ?? []
+
+  const progression = useMemo(
+    () =>
+      seasonResults.data
+        ? buildPointsProgression(seasonResults.data, 5, sprintPoints.data ?? undefined)
+        : null,
+    [seasonResults.data, sprintPoints.data],
+  )
+
+  const constructorChart = constructorRows.map((row) => ({
+    name: row.Constructor.name,
+    points: Number(row.points),
+    constructorId: row.Constructor.constructorId,
+  }))
 
   return (
     <div className="page">
       <div className="page-header">
         <h1>Dashboard</h1>
-        {drivers.data && <span className="season-tag">{drivers.data.StandingsTable.season} season</span>}
+        {season && <span className="season-tag">{season} season</span>}
       </div>
 
       <AsyncBoundary status={status} error={error}>
@@ -28,11 +83,33 @@ export function Dashboard() {
             {leader ? (
               <>
                 <span className="stat-value">
-                  {leader.Driver.givenName} {leader.Driver.familyName}
+                  <Link to={`/drivers/${leader.Driver.driverId}`}>
+                    {leader.Driver.givenName} {leader.Driver.familyName}
+                  </Link>
                 </span>
                 <span className="stat-sub">
                   <TeamDot constructorId={leader.Constructors[0]?.constructorId ?? ''} />
-                  {leader.points} pts · {leader.Constructors.map((c) => c.name).join(' / ')}
+                  {leader.points} pts
+                  {gap !== null && gap > 0 && ` · +${gap} ahead`}
+                </span>
+              </>
+            ) : (
+              <span className="stat-sub">No data yet this season</span>
+            )}
+          </div>
+
+          <div className="stat-card">
+            <span className="stat-label">Constructor leader</span>
+            {constructorLeader ? (
+              <>
+                <span className="stat-value">
+                  <Link to={`/constructors/${constructorLeader.Constructor.constructorId}`}>
+                    {constructorLeader.Constructor.name}
+                  </Link>
+                </span>
+                <span className="stat-sub">
+                  <TeamDot constructorId={constructorLeader.Constructor.constructorId} />
+                  {constructorLeader.points} pts · {constructorLeader.wins} wins
                 </span>
               </>
             ) : (
@@ -46,14 +123,124 @@ export function Dashboard() {
               <>
                 <span className="stat-value">{nextRace.raceName}</span>
                 <span className="stat-sub">
-                  {nextRace.Circuit.circuitName} · {nextRace.date}
+                  {nextRace.Circuit.Location.country} ·{' '}
+                  {daysUntil(nextRace.date) === 0
+                    ? 'today'
+                    : `in ${daysUntil(nextRace.date)} day${daysUntil(nextRace.date) === 1 ? '' : 's'}`}
                 </span>
               </>
             ) : (
               <span className="stat-sub">Season complete</span>
             )}
           </div>
+
+          <div className="stat-card">
+            <span className="stat-label">Season progress</span>
+            <span className="stat-value">
+              {completed} / {races.length}
+            </span>
+            <span className="stat-sub">rounds completed</span>
+            {races.length > 0 && (
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${(completed / races.length) * 100}%` }}
+                />
+              </div>
+            )}
+          </div>
         </div>
+
+        {podium.length > 0 && lastRace && (
+          <>
+            <h2 className="section-title">
+              Last race · <Link to={`/races/${lastRace.round}`}>{lastRace.raceName}</Link>
+            </h2>
+            <div className="podium-grid">
+              {podium.map((result) => (
+                <Link
+                  to={`/drivers/${result.Driver.driverId}`}
+                  className="driver-card"
+                  key={result.Driver.driverId}
+                  style={{ borderLeftColor: getTeamColor(result.Constructor.constructorId) }}
+                >
+                  <div
+                    className="driver-card-number"
+                    style={{ color: getTeamColor(result.Constructor.constructorId) }}
+                  >
+                    P{result.position}
+                  </div>
+                  <div>
+                    <h3>
+                      {result.Driver.givenName} {result.Driver.familyName}
+                    </h3>
+                    <p>{result.Constructor.name}</p>
+                    <p className="dim">{result.Time?.time ?? result.status}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+
+        {progression && progression.rows.length > 0 && (
+          <div className="chart-card">
+            <p className="chart-title">Title fight · cumulative points (top 5)</p>
+            <ResponsiveContainer width="100%" height={240}>
+              <LineChart data={progression.rows} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <XAxis
+                  dataKey="round"
+                  tickFormatter={(v) => `R${v}`}
+                  tick={{ fill: 'var(--text-dim)', fontSize: 12 }}
+                  axisLine={{ stroke: 'var(--border)' }}
+                  tickLine={false}
+                />
+                <YAxis tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
+                  labelStyle={{ color: 'var(--text-h)' }}
+                  labelFormatter={(v) => {
+                    const row = progression.rows.find((r) => r.round === v)
+                    return row ? `Round ${v} · ${row.raceName}` : `Round ${v}`
+                  }}
+                />
+                {progression.driverIds.map((id) => (
+                  <Line
+                    key={id}
+                    type="monotone"
+                    dataKey={id}
+                    name={progression.driverMeta[id].code}
+                    stroke={getTeamColor(progression.driverMeta[id].constructorId)}
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {constructorChart.length > 0 && (
+          <div className="chart-card">
+            <p className="chart-title">Constructors' championship</p>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={constructorChart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <XAxis dataKey="name" tick={{ fill: 'var(--text-dim)', fontSize: 11 }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} interval={0} />
+                <YAxis tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+                <Tooltip
+                  cursor={{ fill: 'var(--bg-elevated)' }}
+                  contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
+                  labelStyle={{ color: 'var(--text-h)' }}
+                />
+                <Bar dataKey="points" radius={[4, 4, 0, 0]}>
+                  {constructorChart.map((entry) => (
+                    <Cell key={entry.name} fill={getTeamColor(entry.constructorId)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </AsyncBoundary>
     </div>
   )

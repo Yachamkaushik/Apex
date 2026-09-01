@@ -171,28 +171,30 @@ export function ConstructorDetail() {
               </div>
             )}
 
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Rd</th>
-                  <th>Race</th>
-                  <th>Points</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rounds.map((r) => (
-                  <tr key={r.round}>
-                    <td>{r.round}</td>
-                    <td>
-                      <Link to={`/races/${r.round}`}>{r.raceName}</Link>
-                    </td>
-                    <td>{r.points}</td>
-                    <td>{r.cumulative}</td>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Rd</th>
+                    <th>Race</th>
+                    <th>Points</th>
+                    <th>Total</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {rounds.map((r) => (
+                    <tr key={r.round}>
+                      <td>{r.round}</td>
+                      <td>
+                        <Link to={`/races/${r.round}`}>{r.raceName}</Link>
+                      </td>
+                      <td>{r.points}</td>
+                      <td>{r.cumulative}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </AsyncBoundary>

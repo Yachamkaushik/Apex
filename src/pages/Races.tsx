@@ -16,30 +16,32 @@ export function Races() {
 
       <AsyncBoundary status={schedule.status} error={schedule.error}>
         {schedule.data && (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Rd</th>
-                <th>Grand Prix</th>
-                <th>Circuit</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {schedule.data.RaceTable.Races.map((race) => (
-                <tr key={race.round} className={race.date < today ? 'past clickable' : 'upcoming clickable'}>
-                  <td>{race.round}</td>
-                  <td>
-                    <Link to={`/races/${race.round}`}>{race.raceName}</Link>
-                  </td>
-                  <td>
-                    {race.Circuit.circuitName}, {race.Circuit.Location.country}
-                  </td>
-                  <td>{race.date}</td>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Rd</th>
+                  <th>Grand Prix</th>
+                  <th>Circuit</th>
+                  <th>Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {schedule.data.RaceTable.Races.map((race) => (
+                  <tr key={race.round} className={race.date < today ? 'past clickable' : 'upcoming clickable'}>
+                    <td>{race.round}</td>
+                    <td>
+                      <Link to={`/races/${race.round}`}>{race.raceName}</Link>
+                    </td>
+                    <td>
+                      {race.Circuit.circuitName}, {race.Circuit.Location.country}
+                    </td>
+                    <td>{race.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </AsyncBoundary>
     </div>
