@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { Dashboard } from './pages/Dashboard'
 import { Drivers } from './pages/Drivers'
+import { RaceDetail } from './pages/RaceDetail'
 import { Races } from './pages/Races'
 import { Standings } from './pages/Standings'
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/standings" element={<Standings />} />
           <Route path="/races" element={<Races />} />
+          <Route path="/races/:round" element={<RaceDetail />} />
           <Route path="/drivers" element={<Drivers />} />
         </Routes>
       </main>

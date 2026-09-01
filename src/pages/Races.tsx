@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { getSchedule } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { useAsync } from '../hooks/useAsync'
@@ -26,9 +27,11 @@ export function Races() {
             </thead>
             <tbody>
               {schedule.data.RaceTable.Races.map((race) => (
-                <tr key={race.round} className={race.date < today ? 'past' : 'upcoming'}>
+                <tr key={race.round} className={race.date < today ? 'past clickable' : 'upcoming clickable'}>
                   <td>{race.round}</td>
-                  <td>{race.raceName}</td>
+                  <td>
+                    <Link to={`/races/${race.round}`}>{race.raceName}</Link>
+                  </td>
                   <td>
                     {race.Circuit.circuitName}, {race.Circuit.Location.country}
                   </td>

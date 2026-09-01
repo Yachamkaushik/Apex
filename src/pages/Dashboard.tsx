@@ -1,5 +1,6 @@
 import { getDriverStandings, getSchedule } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { TeamDot } from '../components/TeamDot'
 import { useAsync } from '../hooks/useAsync'
 
 export function Dashboard() {
@@ -30,6 +31,7 @@ export function Dashboard() {
                   {leader.Driver.givenName} {leader.Driver.familyName}
                 </span>
                 <span className="stat-sub">
+                  <TeamDot constructorId={leader.Constructors[0]?.constructorId ?? ''} />
                   {leader.points} pts · {leader.Constructors.map((c) => c.name).join(' / ')}
                 </span>
               </>
