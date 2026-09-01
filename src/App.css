@@ -153,12 +153,12 @@
   color: var(--text-dim);
 }
 
-.data-table tr.clickable a {
+.data-table td a {
   color: inherit;
   text-decoration: none;
 }
 
-.data-table tr.clickable a:hover {
+.data-table td a:hover {
   color: var(--text-h);
   text-decoration: underline;
 }
@@ -253,6 +253,13 @@
   border-left: 3px solid var(--border);
   border-radius: 10px;
   padding: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.driver-card:hover {
+  border-color: var(--text-dim);
 }
 
 .driver-card-number {

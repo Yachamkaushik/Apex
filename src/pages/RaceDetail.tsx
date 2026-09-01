@@ -82,7 +82,9 @@ export function RaceDetail() {
                   <tr key={r.Driver.driverId}>
                     <td>{r.position}</td>
                     <td>
-                      {r.Driver.givenName} {r.Driver.familyName}
+                      <Link to={`/drivers/${r.Driver.driverId}`}>
+                        {r.Driver.givenName} {r.Driver.familyName}
+                      </Link>
                     </td>
                     <td>
                       <TeamDot constructorId={r.Constructor.constructorId} />

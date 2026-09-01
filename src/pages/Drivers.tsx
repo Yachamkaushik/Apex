@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { getDriverStandings } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { useAsync } from '../hooks/useAsync'
@@ -19,7 +20,12 @@ export function Drivers() {
             {drivers.data.StandingsTable.StandingsLists[0]?.DriverStandings.map((row) => {
               const teamColor = getTeamColor(row.Constructors[0]?.constructorId ?? '')
               return (
-                <div className="driver-card" key={row.Driver.driverId} style={{ borderLeftColor: teamColor }}>
+                <Link
+                  to={`/drivers/${row.Driver.driverId}`}
+                  className="driver-card"
+                  key={row.Driver.driverId}
+                  style={{ borderLeftColor: teamColor }}
+                >
                   <div className="driver-card-number" style={{ color: teamColor }}>
                     {row.Driver.permanentNumber ?? '—'}
                   </div>
@@ -30,7 +36,7 @@ export function Drivers() {
                     <p>{row.Constructors.map((c) => c.name).join(' / ')}</p>
                     <p className="dim">{row.Driver.nationality}</p>
                   </div>
-                </div>
+                </Link>
               )
             })}
           </div>

@@ -1,9 +1,11 @@
-import { useState } from 'react'
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { getConstructorStandings, getDriverStandings } from '../api/f1'
+import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Bar, BarChart, Cell, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { getConstructorStandings, getDriverStandings, getSeasonResults } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
 import { useAsync } from '../hooks/useAsync'
+import { buildPointsProgression } from '../lib/pointsProgression'
 import { getTeamColor } from '../lib/teamColors'
 
 type Tab = 'drivers' | 'constructors'
@@ -13,6 +15,7 @@ export function Standings() {
 
   const drivers = useAsync(() => getDriverStandings('current'), [])
   const constructors = useAsync(() => getConstructorStandings('current'), [])
+  const seasonResults = useAsync(() => getSeasonResults('current'), [])
 
   const season = drivers.data?.StandingsTable.season
 
@@ -30,6 +33,11 @@ export function Standings() {
     points: Number(row.points),
     constructorId: row.Constructor.constructorId,
   }))
+
+  const progression = useMemo(
+    () => (seasonResults.data ? buildPointsProgression(seasonResults.data, 6) : null),
+    [seasonResults.data],
+  )
 
   return (
     <div className="page">
@@ -57,6 +65,44 @@ export function Standings() {
 
       {tab === 'drivers' && (
         <AsyncBoundary status={drivers.status} error={drivers.error}>
+          {progression && (
+            <div className="chart-card">
+              <p className="chart-title">Points progression (top 6)</p>
+              <ResponsiveContainer width="100%" height={280}>
+                <LineChart data={progression.rows} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis
+                    dataKey="round"
+                    tickFormatter={(v) => `R${v}`}
+                    tick={{ fill: 'var(--text-dim)', fontSize: 12 }}
+                    axisLine={{ stroke: 'var(--border)' }}
+                    tickLine={false}
+                  />
+                  <YAxis tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
+                    labelStyle={{ color: 'var(--text-h)' }}
+                    labelFormatter={(v) => {
+                      const row = progression.rows.find((r) => r.round === v)
+                      return row ? `Round ${v} · ${row.raceName}` : `Round ${v}`
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12, color: 'var(--text-dim)' }} />
+                  {progression.driverIds.map((id) => (
+                    <Line
+                      key={id}
+                      type="monotone"
+                      dataKey={id}
+                      name={progression.driverMeta[id].code}
+                      stroke={getTeamColor(progression.driverMeta[id].constructorId)}
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
           <div className="chart-card">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={driverChartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -91,7 +137,9 @@ export function Standings() {
                 <tr key={row.Driver.driverId}>
                   <td>{row.position}</td>
                   <td>
-                    {row.Driver.givenName} {row.Driver.familyName}
+                    <Link to={`/drivers/${row.Driver.driverId}`}>
+                      {row.Driver.givenName} {row.Driver.familyName}
+                    </Link>
                   </td>
                   <td>
                     <TeamDot constructorId={row.Constructors[0]?.constructorId ?? ''} />
