@@ -1,6 +1,8 @@
 import type {
   ConstructorStandingsResponse,
   DriverStandingsResponse,
+  PitStop,
+  PitStopsResponse,
   QualifyingResponse,
   Race,
   RaceResult,
@@ -142,4 +144,38 @@ export async function getSprintPointsByRound(
   }
 
   return byRound
+}
+
+const seasonPitStopsCache = new Map<Season, Promise<Map<string, PitStop[]>>>()
+
+/**
+ * Every pit stop for a season, keyed by round. There's no season-wide pit
+ * stop endpoint (unlike results/sprint), so this fetches one request per
+ * completed round — in parallel, and only for rounds that already have
+ * race results (older seasons and future rounds have none to fetch).
+ */
+export function getSeasonPitStops(season: Season = 'current'): Promise<Map<string, PitStop[]>> {
+  return cachedBySeason(seasonPitStopsCache, season, async () => {
+    const races = await getSeasonResults(season)
+    const byRound = new Map<string, PitStop[]>()
+
+    // One request per round, a few at a time — firing all of them at once
+    // (up to 23 for a full season) is an easy way to trip the API's rate
+    // limit even for a single real visitor.
+    const CONCURRENCY = 4
+    for (let i = 0; i < races.length; i += CONCURRENCY) {
+      const batch = races.slice(i, i + CONCURRENCY)
+      const pages = await Promise.all(
+        batch.map((race) =>
+          getJSON<PitStopsResponse>(`/${season}/${race.round}/pitstops.json?limit=100`).catch(() => null),
+        ),
+      )
+      pages.forEach((page, j) => {
+        const stops = page?.RaceTable.Races[0]?.PitStops
+        if (stops) byRound.set(batch[j].round, stops)
+      })
+    }
+
+    return byRound
+  })
 }

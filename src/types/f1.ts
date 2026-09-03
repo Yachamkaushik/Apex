@@ -168,3 +168,19 @@ export interface SeasonsResponse extends MRDataBase {
     Seasons: { season: string; url: string }[]
   }
 }
+
+export interface PitStop {
+  driverId: string
+  lap: string
+  stop: string
+  time: string
+  duration?: string
+}
+
+export interface PitStopsResponse extends MRDataBase {
+  RaceTable: {
+    season: string
+    round: string
+    Races: (Race & { PitStops: PitStop[] })[]
+  }
+}
