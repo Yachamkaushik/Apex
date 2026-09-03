@@ -1,5 +1,6 @@
 import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
+import { SeasonSelect } from './components/SeasonSelect'
 import { ConstructorDetail } from './pages/ConstructorDetail'
 import { Dashboard } from './pages/Dashboard'
 import { DriverDetail } from './pages/DriverDetail'
@@ -16,14 +17,17 @@ function App() {
           <strong>APEX</strong>
           <span>F1 Analytics</span>
         </div>
-        <nav>
-          <NavLink to="/" end>
-            Dashboard
-          </NavLink>
-          <NavLink to="/standings">Standings</NavLink>
-          <NavLink to="/races">Races</NavLink>
-          <NavLink to="/drivers">Drivers</NavLink>
-        </nav>
+        <div className="header-right">
+          <nav>
+            <NavLink to="/" end>
+              Dashboard
+            </NavLink>
+            <NavLink to="/standings">Standings</NavLink>
+            <NavLink to="/races">Races</NavLink>
+            <NavLink to="/drivers">Drivers</NavLink>
+          </nav>
+          <SeasonSelect />
+        </div>
       </header>
 
       <main className="app-main">

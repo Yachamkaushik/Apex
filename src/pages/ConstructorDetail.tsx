@@ -4,15 +4,17 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import { getConstructorStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { getTeamColor } from '../lib/teamColors'
 
 export function ConstructorDetail() {
   const { constructorId } = useParams<{ constructorId: string }>()
+  const { season } = useSeason()
 
-  const standings = useAsync(() => getConstructorStandings('current'), [])
-  const seasonResults = useAsync(() => getSeasonResults('current'), [])
-  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
+  const standings = useAsync(() => getConstructorStandings(season), [season])
+  const seasonResults = useAsync(() => getSeasonResults(season), [season])
+  const sprintPoints = useAsync(() => getSprintPointsByRound(season), [season])
 
   const status =
     standings.status === 'error' || seasonResults.status === 'error'

@@ -4,6 +4,7 @@ import { Bar, BarChart, Cell, Legend, Line, LineChart, ResponsiveContainer, Tool
 import { getConstructorStandings, getDriverStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { buildPointsProgression } from '../lib/pointsProgression'
 import { getTeamColor } from '../lib/teamColors'
@@ -11,14 +12,15 @@ import { getTeamColor } from '../lib/teamColors'
 type Tab = 'drivers' | 'constructors'
 
 export function Standings() {
+  const { season } = useSeason()
   const [tab, setTab] = useState<Tab>('drivers')
 
-  const drivers = useAsync(() => getDriverStandings('current'), [])
-  const constructors = useAsync(() => getConstructorStandings('current'), [])
-  const seasonResults = useAsync(() => getSeasonResults('current'), [])
-  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
+  const drivers = useAsync(() => getDriverStandings(season), [season])
+  const constructors = useAsync(() => getConstructorStandings(season), [season])
+  const seasonResults = useAsync(() => getSeasonResults(season), [season])
+  const sprintPoints = useAsync(() => getSprintPointsByRound(season), [season])
 
-  const season = drivers.data?.StandingsTable.season
+  const seasonLabel = drivers.data?.StandingsTable.season
 
   const driverRows = drivers.data?.StandingsTable.StandingsLists[0]?.DriverStandings ?? []
   const constructorRows = constructors.data?.StandingsTable.StandingsLists[0]?.ConstructorStandings ?? []
@@ -47,7 +49,7 @@ export function Standings() {
     <div className="page">
       <div className="page-header">
         <h1>Standings</h1>
-        {season && <span className="season-tag">{season} season</span>}
+        {seasonLabel && <span className="season-tag">{seasonLabel} season</span>}
       </div>
 
       <div className="tabs">

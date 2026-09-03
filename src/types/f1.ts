@@ -162,3 +162,9 @@ export interface QualifyingResponse extends MRDataBase {
     Races: (Race & { QualifyingResults: QualifyingResult[] })[]
   }
 }
+
+export interface SeasonsResponse extends MRDataBase {
+  SeasonTable: {
+    Seasons: { season: string; url: string }[]
+  }
+}

@@ -10,6 +10,7 @@ import {
 } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { buildPointsProgression } from '../lib/pointsProgression'
 import { getTeamColor } from '../lib/teamColors'
@@ -23,11 +24,12 @@ function daysUntil(isoDate: string): number {
 }
 
 export function Dashboard() {
-  const drivers = useAsync(() => getDriverStandings('current'), [])
-  const constructors = useAsync(() => getConstructorStandings('current'), [])
-  const schedule = useAsync(() => getSchedule('current'), [])
-  const seasonResults = useAsync(() => getSeasonResults('current'), [])
-  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
+  const { season } = useSeason()
+  const drivers = useAsync(() => getDriverStandings(season), [season])
+  const constructors = useAsync(() => getConstructorStandings(season), [season])
+  const schedule = useAsync(() => getSchedule(season), [season])
+  const seasonResults = useAsync(() => getSeasonResults(season), [season])
+  const sprintPoints = useAsync(() => getSprintPointsByRound(season), [season])
 
   const core = [drivers, constructors, schedule]
   const status = core.some((s) => s.status === 'error')
@@ -37,7 +39,7 @@ export function Dashboard() {
       : 'loading'
   const error = drivers.error ?? constructors.error ?? schedule.error
 
-  const season = drivers.data?.StandingsTable.season
+  const seasonLabel = drivers.data?.StandingsTable.season
   const driverRows = drivers.data?.StandingsTable.StandingsLists[0]?.DriverStandings ?? []
   const constructorRows = constructors.data?.StandingsTable.StandingsLists[0]?.ConstructorStandings ?? []
 
@@ -73,7 +75,7 @@ export function Dashboard() {
     <div className="page">
       <div className="page-header">
         <h1>Dashboard</h1>
-        {season && <span className="season-tag">{season} season</span>}
+        {seasonLabel && <span className="season-tag">{seasonLabel} season</span>}
       </div>
 
       <AsyncBoundary status={status} error={error}>
