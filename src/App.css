@@ -4,12 +4,26 @@
   min-height: 100svh;
 }
 
+/* A thin checkered-flag texture as a nod to the sport, kept subtle. */
+.checker-strip {
+  height: 5px;
+  background-image: conic-gradient(
+    var(--text-h) 90deg,
+    transparent 90deg 180deg,
+    var(--text-h) 180deg 270deg,
+    transparent 270deg
+  );
+  background-size: 10px 10px;
+  opacity: 0.16;
+}
+
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
+  transition: border-color 0.15s ease;
 }
 
 .app-header .logo {
@@ -19,10 +33,25 @@
 }
 
 .app-header .logo strong {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  position: relative;
+  padding-left: 13px;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.5px;
   color: var(--text-h);
+}
+
+.app-header .logo strong::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+  width: 4px;
+  background: var(--accent);
+  transform: skewX(-12deg);
 }
 
 .app-header .logo span {
@@ -36,13 +65,27 @@
 }
 
 .app-header nav a {
+  position: relative;
+  padding-bottom: 4px;
   font-size: 14px;
+  font-weight: 600;
   color: var(--text-dim);
   text-decoration: none;
 }
 
 .app-header nav a.active {
   color: var(--text-h);
+}
+
+.app-header nav a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
 }
 
 .header-right {
@@ -54,17 +97,49 @@
 .season-select {
   font: inherit;
   font-size: 13px;
+  font-weight: 600;
   color: var(--text-h);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 5px 10px;
   cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .season-select:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-h);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-dim);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .app-main {
@@ -86,15 +161,18 @@
 
 .page-header h1 {
   font-size: 28px;
+  letter-spacing: -0.3px;
 }
 
 .season-tag {
   font-size: 13px;
+  font-weight: 600;
   color: var(--text-dim);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 3px 10px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .app-footer {
@@ -103,6 +181,7 @@
   text-align: center;
   font-size: 13px;
   color: var(--text-dim);
+  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 /* Narrow screens: stack the header and let the nav scroll rather than
@@ -130,8 +209,12 @@
     scrollbar-width: none;
   }
 
-  .season-select {
+  .header-controls {
     width: 100%;
+  }
+
+  .season-select {
+    flex: 1;
   }
 
   .app-header nav::-webkit-scrollbar {
@@ -175,12 +258,14 @@
 .tabs button {
   font: inherit;
   font-size: 14px;
+  font-weight: 600;
   color: var(--text-dim);
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 6px 14px;
   cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
 .tabs button.active {
@@ -205,17 +290,18 @@
 .data-table th {
   text-align: left;
   color: var(--text-dim);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--accent);
 }
 
 .data-table td {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .data-table tbody tr:hover {
@@ -266,6 +352,7 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 7px 12px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .filter-input {
@@ -302,9 +389,11 @@
 .chart-card {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  box-shadow: var(--shadow);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
   padding: 16px 16px 4px;
   margin-bottom: 20px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .chart-title {
@@ -337,8 +426,10 @@
   gap: 4px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  box-shadow: var(--shadow);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
   padding: 20px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .stat-label {
@@ -349,8 +440,9 @@
 }
 
 .stat-value {
-  font-size: 20px;
-  font-weight: 600;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 800;
   color: var(--text-h);
 }
 
@@ -414,22 +506,38 @@
   border: 1px solid var(--border);
   border-left: 3px solid var(--border);
   border-radius: 10px;
+  box-shadow: var(--shadow);
   padding: 16px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .driver-card:hover {
   border-color: var(--text-dim);
 }
 
+.driver-card.podium-first {
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3), var(--shadow);
+}
+
+/* A racing-plate style badge — background/border are tinted from whichever
+   team color the page sets via inline `color`. */
 .driver-card-number {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--accent);
-  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
   flex-shrink: 0;
+  border-radius: 8px;
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--accent);
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  border: 1.5px solid color-mix(in srgb, currentColor 45%, transparent);
 }
 
 /* Let long driver names wrap instead of stretching the grid track. */
@@ -448,4 +556,29 @@
 
 .driver-card p.dim {
   font-size: 12px;
+}
+
+/* Skeleton loaders */
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -150% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
+
+.skeleton {
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--border) 25%, var(--bg-elevated) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
 }

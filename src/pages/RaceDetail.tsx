@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Bar, BarChart, Cell, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { getQualifying, getRaceResults } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { ChartSkeleton, TableSkeleton } from '../components/Skeleton'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
@@ -60,7 +61,16 @@ export function RaceDetail() {
         </Link>
       </div>
 
-      <AsyncBoundary status={race.status} error={race.error}>
+      <AsyncBoundary
+        status={race.status}
+        error={race.error}
+        skeleton={
+          <>
+            <ChartSkeleton />
+            <TableSkeleton rows={10} />
+          </>
+        }
+      >
         {!data && <div className="status-block">No results yet for this race.</div>}
         {data && (
           <>

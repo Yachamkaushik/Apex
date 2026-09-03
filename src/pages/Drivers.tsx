@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDriverStandings } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { CardGridSkeleton } from '../components/Skeleton'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { getTeamColor } from '../lib/teamColors'
@@ -50,7 +51,7 @@ export function Drivers() {
         {drivers.data && <span className="season-tag">{drivers.data.StandingsTable.season} season</span>}
       </div>
 
-      <AsyncBoundary status={drivers.status} error={drivers.error}>
+      <AsyncBoundary status={drivers.status} error={drivers.error} skeleton={<CardGridSkeleton count={12} />}>
         <div className="filter-bar">
           <input
             type="search"

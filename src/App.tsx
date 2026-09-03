@@ -1,6 +1,7 @@
 import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { SeasonSelect } from './components/SeasonSelect'
+import { ThemeToggle } from './components/ThemeToggle'
 import { ConstructorDetail } from './pages/ConstructorDetail'
 import { Dashboard } from './pages/Dashboard'
 import { DriverDetail } from './pages/DriverDetail'
@@ -12,6 +13,7 @@ import { Standings } from './pages/Standings'
 function App() {
   return (
     <div className="app">
+      <div className="checker-strip" aria-hidden="true" />
       <header className="app-header">
         <div className="logo">
           <strong>APEX</strong>
@@ -26,7 +28,10 @@ function App() {
             <NavLink to="/races">Races</NavLink>
             <NavLink to="/drivers">Drivers</NavLink>
           </nav>
-          <SeasonSelect />
+          <div className="header-controls">
+            <SeasonSelect />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

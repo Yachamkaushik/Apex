@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { getSchedule } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { TableSkeleton } from '../components/Skeleton'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 
@@ -16,7 +17,7 @@ export function Races() {
         {schedule.data && <span className="season-tag">{schedule.data.RaceTable.season} season</span>}
       </div>
 
-      <AsyncBoundary status={schedule.status} error={schedule.error}>
+      <AsyncBoundary status={schedule.status} error={schedule.error} skeleton={<TableSkeleton rows={12} />}>
         {schedule.data && (
           <div className="table-scroll">
             <table className="data-table">

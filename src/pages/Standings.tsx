@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Bar, BarChart, Cell, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { getConstructorStandings, getDriverStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { ChartSkeleton, TableSkeleton } from '../components/Skeleton'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
@@ -70,7 +71,17 @@ export function Standings() {
       </div>
 
       {tab === 'drivers' && (
-        <AsyncBoundary status={drivers.status} error={drivers.error}>
+        <AsyncBoundary
+          status={drivers.status}
+          error={drivers.error}
+          skeleton={
+            <>
+              <ChartSkeleton />
+              <ChartSkeleton />
+              <TableSkeleton rows={10} />
+            </>
+          }
+        >
           {progression && (
             <div className="chart-card">
               <p className="chart-title">Points progression (top 6)</p>
@@ -163,7 +174,16 @@ export function Standings() {
       )}
 
       {tab === 'constructors' && (
-        <AsyncBoundary status={constructors.status} error={constructors.error}>
+        <AsyncBoundary
+          status={constructors.status}
+          error={constructors.error}
+          skeleton={
+            <>
+              <ChartSkeleton />
+              <TableSkeleton rows={10} />
+            </>
+          }
+        >
           <div className="chart-card">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={constructorChartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
