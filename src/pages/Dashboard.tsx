@@ -9,6 +9,7 @@ import {
   getSprintPointsByRound,
 } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { ChartSkeleton, StatCardsSkeleton } from '../components/Skeleton'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
@@ -78,7 +79,17 @@ export function Dashboard() {
         {seasonLabel && <span className="season-tag">{seasonLabel} season</span>}
       </div>
 
-      <AsyncBoundary status={status} error={error}>
+      <AsyncBoundary
+        status={status}
+        error={error}
+        skeleton={
+          <>
+            <StatCardsSkeleton count={4} />
+            <ChartSkeleton />
+            <ChartSkeleton />
+          </>
+        }
+      >
         <div className="dashboard-grid">
           <div className="stat-card">
             <span className="stat-label">Championship leader</span>
@@ -159,17 +170,17 @@ export function Dashboard() {
               Last race · <Link to={`/races/${lastRace.round}`}>{lastRace.raceName}</Link>
             </h2>
             <div className="podium-grid">
-              {podium.map((result) => (
+              {podium.map((result) => {
+                const isWinner = result.position === '1'
+                const badgeColor = isWinner ? '#d4af37' : getTeamColor(result.Constructor.constructorId)
+                return (
                 <Link
                   to={`/drivers/${result.Driver.driverId}`}
-                  className="driver-card"
+                  className={`driver-card${isWinner ? ' podium-first' : ''}`}
                   key={result.Driver.driverId}
-                  style={{ borderLeftColor: getTeamColor(result.Constructor.constructorId) }}
+                  style={{ borderLeftColor: badgeColor }}
                 >
-                  <div
-                    className="driver-card-number"
-                    style={{ color: getTeamColor(result.Constructor.constructorId) }}
-                  >
+                  <div className="driver-card-number" style={{ color: badgeColor }}>
                     P{result.position}
                   </div>
                   <div>
@@ -180,7 +191,8 @@ export function Dashboard() {
                     <p className="dim">{result.Time?.time ?? result.status}</p>
                   </div>
                 </Link>
-              ))}
+                )
+              })}
             </div>
           </>
         )}

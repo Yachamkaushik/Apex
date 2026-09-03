@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { getDriverStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { ChartSkeleton, StatCardsSkeleton, TableSkeleton } from '../components/Skeleton'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
@@ -61,7 +62,17 @@ export function DriverDetail() {
         </Link>
       </div>
 
-      <AsyncBoundary status={status} error={error}>
+      <AsyncBoundary
+        status={status}
+        error={error}
+        skeleton={
+          <>
+            <StatCardsSkeleton count={3} />
+            <ChartSkeleton height={200} />
+            <TableSkeleton rows={10} />
+          </>
+        }
+      >
         {!standing && <div className="status-block">Driver not found this season.</div>}
 
         {standing && (
