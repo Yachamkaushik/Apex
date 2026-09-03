@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDriverStandings } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { getTeamColor } from '../lib/teamColors'
 
 export function Drivers() {
-  const drivers = useAsync(() => getDriverStandings('current'), [])
+  const { season } = useSeason()
+  const drivers = useAsync(() => getDriverStandings(season), [season])
   const [query, setQuery] = useState('')
   const [team, setTeam] = useState('all')
 

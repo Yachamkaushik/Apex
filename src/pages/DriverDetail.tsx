@@ -4,15 +4,17 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import { getDriverStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { getTeamColor } from '../lib/teamColors'
 
 export function DriverDetail() {
   const { driverId } = useParams<{ driverId: string }>()
+  const { season } = useSeason()
 
-  const standings = useAsync(() => getDriverStandings('current'), [])
-  const seasonResults = useAsync(() => getSeasonResults('current'), [])
-  const sprintPoints = useAsync(() => getSprintPointsByRound('current'), [])
+  const standings = useAsync(() => getDriverStandings(season), [season])
+  const seasonResults = useAsync(() => getSeasonResults(season), [season])
+  const sprintPoints = useAsync(() => getSprintPointsByRound(season), [season])
 
   const status = standings.status === 'error' || seasonResults.status === 'error'
     ? 'error'

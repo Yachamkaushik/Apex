@@ -45,6 +45,28 @@
   color: var(--text-h);
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.season-select {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-h);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.season-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 .app-main {
   flex: 1;
   padding: 32px 24px 48px;
@@ -93,12 +115,23 @@
     padding: 14px 16px;
   }
 
+  .header-right {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
   .app-header nav {
     width: 100%;
     gap: 16px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+  }
+
+  .season-select {
+    width: 100%;
   }
 
   .app-header nav::-webkit-scrollbar {

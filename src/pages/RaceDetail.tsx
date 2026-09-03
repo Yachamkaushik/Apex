@@ -4,15 +4,17 @@ import { Bar, BarChart, Cell, ReferenceLine, ResponsiveContainer, Scatter, Scatt
 import { getQualifying, getRaceResults } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { TeamDot } from '../components/TeamDot'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 import { getTeamColor } from '../lib/teamColors'
 
 export function RaceDetail() {
   const { round } = useParams<{ round: string }>()
   const roundNumber = Number(round)
+  const { season } = useSeason()
 
-  const race = useAsync(() => getRaceResults('current', roundNumber), [roundNumber])
-  const qualifying = useAsync(() => getQualifying('current', roundNumber), [roundNumber])
+  const race = useAsync(() => getRaceResults(season, roundNumber), [roundNumber, season])
+  const qualifying = useAsync(() => getQualifying(season, roundNumber), [roundNumber, season])
 
   const data = race.data?.RaceTable.Races[0]
   const results = data?.Results ?? []

@@ -6,6 +6,7 @@ import type {
   RaceResult,
   RaceResultsResponse,
   ScheduleResponse,
+  SeasonsResponse,
 } from '../types/f1'
 
 const BASE_URL = 'https://api.jolpi.ca/ergast/f1'
@@ -32,6 +33,21 @@ export function getConstructorStandings(season: Season = 'current') {
 
 export function getSchedule(season: Season = 'current') {
   return getJSON<ScheduleResponse>(`/${season}.json?limit=40`)
+}
+
+let seasonsListPromise: Promise<string[]> | null = null
+
+/** All F1 seasons the API has data for, ascending (e.g. "1950" .. "2026"). Fetched once and cached. */
+export function getSeasonsList(): Promise<string[]> {
+  if (!seasonsListPromise) {
+    seasonsListPromise = getJSON<SeasonsResponse>('/seasons.json?limit=100')
+      .then((data) => data.SeasonTable.Seasons.map((s) => s.season))
+      .catch((err) => {
+        seasonsListPromise = null
+        throw err
+      })
+  }
+  return seasonsListPromise
 }
 
 export function getRaceResults(season: Season, round: number | 'last') {

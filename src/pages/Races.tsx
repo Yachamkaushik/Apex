@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { getSchedule } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
 
 export function Races() {
-  const schedule = useAsync(() => getSchedule('current'), [])
+  const { season } = useSeason()
+  const schedule = useAsync(() => getSchedule(season), [season])
   const today = new Date().toISOString().slice(0, 10)
 
   return (
