@@ -9,6 +9,7 @@ import {
   getSprintPointsByRound,
 } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { CountUp } from '../components/CountUp'
 import { ChartSkeleton, StatCardsSkeleton } from '../components/Skeleton'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
@@ -102,8 +103,13 @@ export function Dashboard() {
                 </span>
                 <span className="stat-sub">
                   <TeamDot constructorId={leader.Constructors[0]?.constructorId ?? ''} />
-                  {leader.points} pts
-                  {gap !== null && gap > 0 && ` · +${gap} ahead`}
+                  <CountUp value={Number(leader.points)} /> pts
+                  {gap !== null && gap > 0 && (
+                    <>
+                      {' '}
+                      · +<CountUp value={gap} /> ahead
+                    </>
+                  )}
                 </span>
               </>
             ) : (
@@ -122,7 +128,7 @@ export function Dashboard() {
                 </span>
                 <span className="stat-sub">
                   <TeamDot constructorId={constructorLeader.Constructor.constructorId} />
-                  {constructorLeader.points} pts · {constructorLeader.wins} wins
+                  <CountUp value={Number(constructorLeader.points)} /> pts · {constructorLeader.wins} wins
                 </span>
               </>
             ) : (
@@ -150,7 +156,7 @@ export function Dashboard() {
           <div className="stat-card">
             <span className="stat-label">Season progress</span>
             <span className="stat-value">
-              {completed} / {races.length}
+              <CountUp value={completed} /> / {races.length}
             </span>
             <span className="stat-sub">rounds completed</span>
             {races.length > 0 && (
