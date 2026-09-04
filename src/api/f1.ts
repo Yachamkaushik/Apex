@@ -11,15 +11,34 @@ import type {
   SeasonsResponse,
 } from '../types/f1'
 
-const BASE_URL = 'https://api.jolpi.ca/ergast/f1'
+const PROXY_BASE_URL = '/api/f1'
+const PRIMARY_BASE_URL = 'https://api.jolpi.ca/ergast/f1'
+const BACKUP_BASE_URL = 'https://ergast.com/api/f1'
 
 async function getJSON<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`)
-  if (!res.ok) {
-    throw new Error(`F1 API request failed: ${res.status} ${res.statusText} (${path})`)
+  const endpoints = [
+    `${PROXY_BASE_URL}${path}`,
+    `${PRIMARY_BASE_URL}${path}`,
+    `${BACKUP_BASE_URL}${path}`,
+  ]
+
+  let lastError: Error | null = null
+
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url)
+      if (res.ok) {
+        const json = await res.json()
+        if (json?.MRData) return json.MRData as T
+      } else {
+        lastError = new Error(`F1 API request failed: ${res.status} ${res.statusText} (${url})`)
+      }
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err))
+    }
   }
-  const json = await res.json()
-  return json.MRData as T
+
+  throw lastError ?? new Error(`F1 API request failed for path: ${path}`)
 }
 
 /** Season identifier: a 4-digit year, or "current" for the active season. */
@@ -43,7 +62,7 @@ let seasonsListPromise: Promise<string[]> | null = null
 export function getSeasonsList(): Promise<string[]> {
   if (!seasonsListPromise) {
     seasonsListPromise = getJSON<SeasonsResponse>('/seasons.json?limit=100')
-      .then((data) => data.SeasonTable.Seasons.map((s) => s.season))
+      .then((data) => data.SeasonTable?.Seasons?.map((s) => s.season) ?? [])
       .catch((err) => {
         seasonsListPromise = null
         throw err
@@ -66,7 +85,7 @@ const PAGE_SIZE = 100
 
 interface PagedRaceResponse<K extends string> {
   total: string
-  RaceTable: { Races: (Race & Record<K, RaceResult[]>)[] }
+  RaceTable?: { Races?: (Race & Record<K, RaceResult[]>)[] }
 }
 
 /**
@@ -82,7 +101,8 @@ async function fetchAllRounds<K extends string>(path: string, key: K): Promise<R
     const page = await getJSON<PagedRaceResponse<K>>(
       `${path}${separator}limit=${PAGE_SIZE}&offset=${offset}`,
     )
-    for (const race of page.RaceTable.Races) {
+    const raceList = page?.RaceTable?.Races ?? []
+    for (const race of raceList) {
       const rows = race[key] ?? []
       const existing = races.get(race.round)
       if (existing) {
@@ -92,7 +112,8 @@ async function fetchAllRounds<K extends string>(path: string, key: K): Promise<R
       }
     }
     offset += PAGE_SIZE
-    if (offset >= Number(page.total)) break
+    const total = Number(page?.total ?? 0)
+    if (raceList.length === 0 || offset >= total) break
   }
 
   return Array.from(races.values()).sort((a, b) => Number(a.round) - Number(b.round))

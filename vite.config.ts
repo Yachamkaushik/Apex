@@ -4,6 +4,15 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api/f1': {
+        target: 'https://api.jolpi.ca/ergast/f1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/f1/, ''),
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {
