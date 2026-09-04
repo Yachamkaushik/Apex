@@ -1,16 +1,19 @@
+import { lazy, Suspense } from 'react'
 import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
+import { RouteLoadingBar } from './components/RouteLoadingBar'
 import { SeasonSelect } from './components/SeasonSelect'
 import { ThemeToggle } from './components/ThemeToggle'
-import { Compare } from './pages/Compare'
-import { ConstructorDetail } from './pages/ConstructorDetail'
-import { Dashboard } from './pages/Dashboard'
-import { DriverDetail } from './pages/DriverDetail'
-import { Drivers } from './pages/Drivers'
-import { Insights } from './pages/Insights'
-import { RaceDetail } from './pages/RaceDetail'
-import { Races } from './pages/Races'
-import { Standings } from './pages/Standings'
+
+const Compare = lazy(() => import('./pages/Compare').then((m) => ({ default: m.Compare })))
+const ConstructorDetail = lazy(() => import('./pages/ConstructorDetail').then((m) => ({ default: m.ConstructorDetail })))
+const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })))
+const DriverDetail = lazy(() => import('./pages/DriverDetail').then((m) => ({ default: m.DriverDetail })))
+const Drivers = lazy(() => import('./pages/Drivers').then((m) => ({ default: m.Drivers })))
+const Insights = lazy(() => import('./pages/Insights').then((m) => ({ default: m.Insights })))
+const RaceDetail = lazy(() => import('./pages/RaceDetail').then((m) => ({ default: m.RaceDetail })))
+const Races = lazy(() => import('./pages/Races').then((m) => ({ default: m.Races })))
+const Standings = lazy(() => import('./pages/Standings').then((m) => ({ default: m.Standings })))
 
 function App() {
   return (
@@ -46,17 +49,19 @@ function App() {
       </header>
 
       <main className="app-main">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/standings" element={<Standings />} />
-          <Route path="/constructors/:constructorId" element={<ConstructorDetail />} />
-          <Route path="/races" element={<Races />} />
-          <Route path="/races/:round" element={<RaceDetail />} />
-          <Route path="/drivers" element={<Drivers />} />
-          <Route path="/drivers/:driverId" element={<DriverDetail />} />
-          <Route path="/compare" element={<Compare />} />
-          <Route path="/insights" element={<Insights />} />
-        </Routes>
+        <Suspense fallback={<RouteLoadingBar />}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/standings" element={<Standings />} />
+            <Route path="/constructors/:constructorId" element={<ConstructorDetail />} />
+            <Route path="/races" element={<Races />} />
+            <Route path="/races/:round" element={<RaceDetail />} />
+            <Route path="/drivers" element={<Drivers />} />
+            <Route path="/drivers/:driverId" element={<DriverDetail />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/insights" element={<Insights />} />
+          </Routes>
+        </Suspense>
       </main>
 
       <footer className="app-footer">Apex F1 Analytics Dashboard</footer>

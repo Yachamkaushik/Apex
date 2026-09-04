@@ -4,6 +4,7 @@ import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import { getDriverStandings, getSeasonResults } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
 import { ChartSkeleton, TableSkeleton } from '../components/Skeleton'
+import { CountUp } from '../components/CountUp'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
 import { useAsync } from '../hooks/useAsync'
@@ -161,12 +162,12 @@ export function Compare() {
                   <span className="stat-value" style={{ color: colorA }}>
                     P{standingA.position}
                   </span>
-                  <span className="stat-sub">{standingA.points} pts · {standingA.wins} wins</span>
+                  <span className="stat-sub"><CountUp value={Number(standingA.points)} /> pts · {standingA.wins} wins</span>
                 </div>
                 <div className="stat-card">
                   <span className="stat-label">Head-to-head finishes</span>
                   <span className="stat-value">
-                    {tally.a} – {tally.b}
+                    <CountUp value={tally.a} /> – <CountUp value={tally.b} />
                   </span>
                   <span className="stat-sub">races both finished, who was ahead</span>
                 </div>
@@ -178,7 +179,7 @@ export function Compare() {
                   <span className="stat-value" style={{ color: colorB }}>
                     P{standingB.position}
                   </span>
-                  <span className="stat-sub">{standingB.points} pts · {standingB.wins} wins</span>
+                  <span className="stat-sub"><CountUp value={Number(standingB.points)} /> pts · {standingB.wins} wins</span>
                 </div>
               </div>
             )}

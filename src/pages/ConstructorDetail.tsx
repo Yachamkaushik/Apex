@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { getConstructorStandings, getSeasonResults, getSprintPointsByRound } from '../api/f1'
 import { AsyncBoundary } from '../components/AsyncBoundary'
+import { CountUp } from '../components/CountUp'
 import { ChartSkeleton, StatCardsSkeleton, TableSkeleton } from '../components/Skeleton'
 import { TeamDot } from '../components/TeamDot'
 import { useSeason } from '../context/SeasonContext'
@@ -112,12 +113,12 @@ export function ConstructorDetail() {
                 <span className="stat-label">Championship position</span>
                 <span className="stat-value">P{standing.position}</span>
                 <span className="stat-sub">
-                  {standing.points} pts · {standing.wins} wins
+                  <CountUp value={Number(standing.points)} /> pts · {standing.wins} wins
                 </span>
               </div>
               <div className="stat-card">
                 <span className="stat-label">Podiums</span>
-                <span className="stat-value">{podiums}</span>
+                <span className="stat-value"><CountUp value={podiums} /></span>
                 <span className="stat-sub">Across {rounds.length} rounds</span>
               </div>
               <div className="stat-card">

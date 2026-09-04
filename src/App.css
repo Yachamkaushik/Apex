@@ -301,8 +301,13 @@
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
+.data-table tbody tr {
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
 .data-table tbody tr:hover {
   background: var(--bg-elevated);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .data-table tr.past {
@@ -511,11 +516,13 @@
   padding: 16px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .driver-card:hover {
-  border-color: var(--text-dim);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 0 var(--border);
 }
 
 .driver-card.podium-first {
@@ -579,4 +586,92 @@
   flex-direction: column;
   gap: 10px;
   padding: 12px 0;
+}
+
+/* Route-change loading bar (Suspense fallback for lazy-loaded pages) */
+
+@keyframes route-loading-fill {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 88%;
+  }
+}
+
+.route-loading {
+  position: relative;
+  height: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.route-loading-bar {
+  height: 100%;
+  background: var(--accent);
+  animation: route-loading-fill 1.6s cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-loading-bar {
+    animation: none;
+    width: 60%;
+  }
+}
+
+/* Staggered entrance for card grids */
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-grid > *,
+.podium-grid > *,
+.driver-grid > * {
+  animation: card-enter 0.35s ease backwards;
+}
+
+.dashboard-grid > *:nth-child(1),
+.podium-grid > *:nth-child(1),
+.driver-grid > *:nth-child(6n + 1) {
+  animation-delay: 0ms;
+}
+.dashboard-grid > *:nth-child(2),
+.podium-grid > *:nth-child(2),
+.driver-grid > *:nth-child(6n + 2) {
+  animation-delay: 40ms;
+}
+.dashboard-grid > *:nth-child(3),
+.podium-grid > *:nth-child(3),
+.driver-grid > *:nth-child(6n + 3) {
+  animation-delay: 80ms;
+}
+.dashboard-grid > *:nth-child(4),
+.driver-grid > *:nth-child(6n + 4) {
+  animation-delay: 120ms;
+}
+.driver-grid > *:nth-child(6n + 5) {
+  animation-delay: 160ms;
+}
+.driver-grid > *:nth-child(6n + 6) {
+  animation-delay: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-grid > *,
+  .podium-grid > *,
+  .driver-grid > * {
+    animation: none;
+  }
+
+  .driver-card:hover {
+    transform: none;
+  }
 }
