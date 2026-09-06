@@ -3,6 +3,15 @@ import { getSeasonsList, type Season } from '../api/f1'
 
 const STORAGE_KEY = 'apex:season'
 
+/**
+ * Earliest season the selector offers. Scoped to the "modern era" rather
+ * than the full 1950+ history the API has: this is also the first season
+ * with full pit-stop timing and fastest-lap data, so every page — not just
+ * standings/results — actually has something to show for every season on
+ * the list.
+ */
+const MIN_SEASON = 2011
+
 export interface SeasonOption {
   value: Season
   label: string
@@ -23,7 +32,10 @@ function readStoredSeason(): Season {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw || raw === 'current') return 'current'
     const year = Number(raw)
-    return Number.isFinite(year) ? year : 'current'
+    // A season saved before the modern-era cutoff was introduced (or a
+    // stale/corrupt value) falls back to 'current' rather than a range
+    // the app no longer offers.
+    return Number.isFinite(year) && year >= MIN_SEASON ? year : 'current'
   } catch {
     return 'current'
   }
@@ -37,7 +49,7 @@ export function SeasonProvider({ children }: { children: ReactNode }) {
     let cancelled = false
     getSeasonsList()
       .then((list) => {
-        if (!cancelled) setYears(list)
+        if (!cancelled) setYears(list.filter((y) => Number(y) >= MIN_SEASON))
       })
       .catch(() => {
         // Selector just won't offer historical years — the "current" default still works.

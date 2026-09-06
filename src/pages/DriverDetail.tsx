@@ -128,6 +128,7 @@ export function DriverDetail() {
                     <Tooltip
                       contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
                       labelStyle={{ color: 'var(--text-h)' }}
+                      itemStyle={{ color: 'var(--text-h)' }}
                       labelFormatter={(v) => {
                         const row = races.find((r) => r.round === v)
                         return row ? `Round ${v} · ${row.raceName}` : `Round ${v}`

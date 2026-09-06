@@ -87,6 +87,7 @@ export function Insights() {
                         cursor={{ fill: 'var(--bg-elevated)' }}
                         contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}
                         labelStyle={{ color: 'var(--text-h)' }}
+                        itemStyle={{ color: 'var(--text-h)' }}
                       />
                       <Bar dataKey="count" fill="var(--accent)" />
                     </BarChart>
@@ -150,6 +151,7 @@ export function Insights() {
                   <Tooltip
                     contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}
                     labelStyle={{ color: 'var(--text-h)' }}
+                    itemStyle={{ color: 'var(--text-h)' }}
                     formatter={(value, name) => [`+${value}s`, name]}
                     labelFormatter={(v) => {
                       const row = paceTrend.rows.find((r) => r.round === v)
@@ -228,6 +230,7 @@ export function Insights() {
                     cursor={{ fill: 'var(--bg-elevated)' }}
                     contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}
                     labelStyle={{ color: 'var(--text-h)' }}
+                    itemStyle={{ color: 'var(--text-h)' }}
                     formatter={(value) => [`${value}s`, 'Avg duration']}
                   />
                   <Bar dataKey="avgDuration">
