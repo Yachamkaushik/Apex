@@ -94,6 +94,7 @@ export function RaceDetail() {
                       cursor={{ fill: 'var(--bg-elevated)' }}
                       contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
                       labelStyle={{ color: 'var(--text-h)' }}
+                      itemStyle={{ color: 'var(--text-h)' }}
                     />
                     <Bar dataKey="delta" radius={[4, 4, 4, 4]}>
                       {chartData.map((entry) => (
@@ -145,6 +146,7 @@ export function RaceDetail() {
                       cursor={{ strokeDasharray: '3 3', stroke: 'var(--border)' }}
                       contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
                       labelStyle={{ color: 'var(--text-h)' }}
+                      itemStyle={{ color: 'var(--text-h)' }}
                       formatter={(value, name) => [`P${value}`, name]}
                       labelFormatter={() => ''}
                     />

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { Link, NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { RouteLoadingBar } from './components/RouteLoadingBar'
 import { SeasonSelect } from './components/SeasonSelect'
@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <div className="logo">
+        <Link to="/" className="logo" aria-label="Apex home">
           <svg className="brand-mark" width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
             <rect width="32" height="32" rx="3" fill="#e10600" />
             <path
@@ -31,7 +31,7 @@ function App() {
           </svg>
           <strong>APEX</strong>
           <span>F1 Analytics</span>
-        </div>
+        </Link>
         <div className="header-right">
           <nav>
             <NavLink to="/" end>

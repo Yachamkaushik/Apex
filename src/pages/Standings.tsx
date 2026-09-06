@@ -98,6 +98,7 @@ export function Standings() {
                   <Tooltip
                     contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
                     labelStyle={{ color: 'var(--text-h)' }}
+                    itemStyle={{ color: 'var(--text-h)' }}
                     labelFormatter={(v) => {
                       const row = progression.rows.find((r) => r.round === v)
                       return row ? `Round ${v} · ${row.raceName}` : `Round ${v}`
@@ -129,6 +130,7 @@ export function Standings() {
                   cursor={{ fill: 'var(--bg-elevated)' }}
                   contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
                   labelStyle={{ color: 'var(--text-h)' }}
+                  itemStyle={{ color: 'var(--text-h)' }}
                 />
                 <Bar dataKey="points" radius={[4, 4, 0, 0]}>
                   {driverChartData.map((entry) => (
@@ -193,6 +195,7 @@ export function Standings() {
                   cursor={{ fill: 'var(--bg-elevated)' }}
                   contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 }}
                   labelStyle={{ color: 'var(--text-h)' }}
+                  itemStyle={{ color: 'var(--text-h)' }}
                 />
                 <Bar dataKey="points" radius={[4, 4, 0, 0]}>
                   {constructorChartData.map((entry) => (

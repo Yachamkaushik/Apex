@@ -194,6 +194,7 @@ export function Compare() {
                     <Tooltip
                       contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}
                       labelStyle={{ color: 'var(--text-h)' }}
+                      itemStyle={{ color: 'var(--text-h)' }}
                       labelFormatter={(v) => `Round ${v}`}
                     />
                     <Line type="monotone" dataKey="a" name={standingA.Driver.code ?? standingA.Driver.familyName} stroke={colorA} strokeWidth={2} dot={false} />

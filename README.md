@@ -1,6 +1,6 @@
 # Apex
 
-An F1 analytics dashboard, built with React + TypeScript (Vite). Live data on standings, races, and drivers back to 1950, plus a set of deeper analytics — head-to-head driver comparisons, reliability, race pace, and pit stops.
+An F1 analytics dashboard, built with React + TypeScript (Vite). Live data on standings, races, and drivers across the modern era (2011–present), plus a set of deeper analytics — head-to-head driver comparisons, reliability, race pace, and pit stops.
 
 ## Features
 
@@ -13,7 +13,7 @@ An F1 analytics dashboard, built with React + TypeScript (Vite). Live data on st
   - *Reliability* — DNF causes and per-driver finish rates
   - *Pace* — each driver's gap to the fastest lap of each round, charted across the season
   - *Pit stops* — average stop duration by team and the season's fastest individual stops
-- **Season selector** — browse any season back to 1950, not just the current one
+- **Season selector** — browse any season from 2011 onward, not just the current one (the API has data back to 1950, but 2011 is where pit-stop timing and fastest-lap data both become consistently available, so every page — not just standings — has something to show for every season on the list)
 - **Light/dark theme** — toggle in the header, persisted locally
 
 ## Tech stack
