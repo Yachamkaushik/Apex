@@ -6,6 +6,7 @@ import { SeasonSelect } from './components/SeasonSelect'
 import { ThemeToggle } from './components/ThemeToggle'
 
 const Cars = lazy(() => import('./pages/Cars').then((m) => ({ default: m.Cars })))
+const Circuits = lazy(() => import('./pages/Circuits').then((m) => ({ default: m.Circuits })))
 const Compare = lazy(() => import('./pages/Compare').then((m) => ({ default: m.Compare })))
 const ConstructorDetail = lazy(() => import('./pages/ConstructorDetail').then((m) => ({ default: m.ConstructorDetail })))
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })))
@@ -38,6 +39,7 @@ function App() {
             </NavLink>
             <NavLink to="/standings">Standings</NavLink>
             <NavLink to="/races">Races</NavLink>
+            <NavLink to="/circuits">Circuits</NavLink>
             <NavLink to="/drivers">Drivers</NavLink>
             <NavLink to="/cars">Cars</NavLink>
             <NavLink to="/compare">Compare</NavLink>
@@ -58,6 +60,7 @@ function App() {
             <Route path="/constructors/:constructorId" element={<ConstructorDetail />} />
             <Route path="/races" element={<Races />} />
             <Route path="/races/:round" element={<RaceDetail />} />
+            <Route path="/circuits" element={<Circuits />} />
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/drivers/:driverId" element={<DriverDetail />} />
             <Route path="/cars" element={<Cars />} />
