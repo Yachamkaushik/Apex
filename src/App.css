@@ -1041,3 +1041,361 @@
 .car-innovations-list li {
   margin-bottom: 4px;
 }
+
+/* ==========================================================================
+   F1 Circuits Page Styles
+   ========================================================================== */
+
+.circuit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.circuit-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+}
+
+.circuit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--accent);
+}
+
+.circuit-card:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.circuit-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.circuit-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.circuit-country-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.circuit-type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.circuit-type-badge.type-permanent {
+  color: #0284c7;
+  border-color: rgba(2, 132, 199, 0.3);
+  background: rgba(2, 132, 199, 0.08);
+}
+
+.circuit-type-badge.type-street {
+  color: #d97706;
+  border-color: rgba(217, 119, 6, 0.3);
+  background: rgba(217, 119, 6, 0.08);
+}
+
+.circuit-type-badge.type-hybrid {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.circuit-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-h);
+  margin-bottom: 2px;
+}
+
+.circuit-location {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.circuit-image-wrapper {
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--text-dim) 5%, var(--bg));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.circuit-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+  filter: contrast(1.05) brightness(1.02);
+}
+
+.circuit-card:hover .circuit-image {
+  transform: scale(1.04);
+}
+
+.circuit-quick-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+}
+
+.circuit-spec-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.circuit-spec-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.circuit-spec-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-h);
+  font-variant-numeric: tabular-nums;
+}
+
+.circuit-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.circuit-tags-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.circuit-feature-pill {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px 6px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 175px;
+}
+
+.circuit-inspect-btn {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 4px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.circuit-inspect-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* Modal Dialog for Circuit */
+
+.modal-content.circuit-modal {
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  padding: 24px;
+  animation: modal-slide-in 0.25s ease;
+}
+
+.circuit-modal-hero {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--text-dim) 6%, var(--bg));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+.circuit-modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.circuit-modal-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.circuit-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.circuit-specs-card,
+.circuit-corners-card,
+.circuit-features-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.circuit-corners-card {
+  margin-bottom: 20px;
+}
+
+.circuit-specs-heading {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-h);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.circuit-specs-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  font-size: 13px;
+  margin: 0;
+}
+
+.circuit-specs-dl dt {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.circuit-specs-dl dd {
+  margin: 0;
+  color: var(--text-h);
+}
+
+.circuit-corners-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.circuit-corner-item {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.circuit-corner-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.circuit-corner-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.circuit-corner-turn {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 2px 6px;
+  border-radius: var(--radius);
+}
+
+.circuit-corner-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.circuit-corner-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.circuit-features-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.circuit-features-list li {
+  margin-bottom: 4px;
+}
+
