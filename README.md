@@ -13,6 +13,8 @@ An F1 analytics dashboard, built with React + TypeScript (Vite). Live data on st
   - *Reliability* — DNF causes and per-driver finish rates
   - *Pace* — each driver's gap to the fastest lap of each round, charted across the season
   - *Pit stops* — average stop duration by team and the season's fastest individual stops
+- **Cars** - The f1 car carousel like none other.
+- **Circuits** - The crazy F1 circuits come alive on your screen.
 - **Season selector** — browse any season from 2011 onward, not just the current one (the API has data back to 1950, but 2011 is where pit-stop timing and fastest-lap data both become consistently available, so every page — not just standings — has something to show for every season on the list)
 - **Light/dark theme** — toggle in the header, persisted locally
 
