@@ -1,0 +1,8 @@
+services:
+  apex:
+    build: .
+    image: apex:latest
+    container_name: apex
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

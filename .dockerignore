@@ -1,0 +1,19 @@
+# Keep the build context small and the layer cache stable.
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.idea
+.vscode
+.claude
+.DS_Store
+*.log
+*.local
+
+# Not needed inside the image
+Dockerfile
+.dockerignore
+docker-compose.yml
+Jenkinsfile
+README.md
