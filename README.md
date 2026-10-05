@@ -46,6 +46,30 @@ npm run dev
 - `npm run preview` — preview the production build locally
 - `npm run lint` — lint the project
 
+## Running with Docker
+
+The app ships as a small, self-contained image: a multi-stage build (Node builds the static bundle; nginx serves it), so you don't need Node installed to run it.
+
+```bash
+# build and run
+docker build -t apex .
+docker run --rm -p 8080:8080 apex
+
+# or with Compose
+docker compose up --build
+```
+
+Then open <http://localhost:8080>.
+
+What the image does:
+
+- **Multi-stage build** — `npm ci` + `npm run build` happen in a throwaway `node:24-alpine` stage; only the built `dist/` is copied into the final `nginx` image, so the runtime image contains no Node, no `node_modules`, and no source.
+- **Non-root** — uses the `nginx-unprivileged` base image, so it listens on `8080` and runs as an unprivileged user.
+- **SPA routing** — unknown paths fall back to `index.html`, so deep links and hard refreshes on routes like `/drivers/norris` work.
+- **`/api/f1` proxy** — nginx proxies `/api/f1/*` to the Jolpica API and caches successful responses for 5 minutes (serving stale data if the upstream errors or rate-limits). This mirrors the dev-server proxy in `vite.config.ts`, which is why the app's client tries `/api/f1` first.
+- **Caching headers** — fingerprinted files under `/assets/` are cached for a year; `index.html` is always revalidated.
+- **Health check** — `GET /healthz` returns `ok`; the image declares a Docker `HEALTHCHECK` against it.
+
 ## Deployment
 
 Deployed on [Vercel](https://vercel.com) — pushes to `main` build and deploy automatically. Framework preset: Vite.

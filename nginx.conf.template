@@ -1,0 +1,80 @@
+# Cache for the upstream F1 API (see the /api/f1/ location below). Keeps the
+# app well clear of the public API's rate limit, and lets it keep serving
+# slightly stale data if the upstream is down or returns 429.
+proxy_cache_path /var/cache/nginx/f1api levels=1:2 keys_zone=f1api:10m max_size=100m inactive=1h use_temp_path=off;
+
+server {
+    listen 8080;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    gzip on;
+    gzip_comp_level 5;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_vary on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    # Liveness endpoint for the Docker HEALTHCHECK / orchestrators.
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # Fingerprinted build output (content hash in the filename) — safe to cache
+    # for a year. A missing chunk must 404 rather than fall through to
+    # index.html, or a stale tab after a deploy gets HTML where it expects JS.
+    location /assets/ {
+        expires 1y;
+        try_files $uri =404;
+    }
+
+    # Unfingerprinted images from /public — cache for a week.
+    location /static/ {
+        expires 7d;
+        try_files $uri =404;
+    }
+
+    # Same-origin proxy to the Jolpica F1 API. The app tries /api/f1 first (it
+    # is what the Vite dev server proxies too), then falls back to the public
+    # API directly. Using a variable for the upstream host makes nginx
+    # re-resolve DNS at runtime rather than once at startup.
+    location /api/f1/ {
+        resolver ${NGINX_LOCAL_RESOLVERS} valid=60s ipv6=off;
+        set $f1_upstream api.jolpi.ca;
+        rewrite ^/api/f1/(.*)$ /ergast/f1/$1 break;
+
+        proxy_pass https://$f1_upstream;
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_ssl_name $f1_upstream;
+        proxy_ssl_verify on;
+        proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+        proxy_set_header Host $f1_upstream;
+        proxy_set_header Connection "";
+        proxy_set_header Accept-Encoding "";
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+
+        proxy_cache f1api;
+        proxy_cache_valid 200 5m;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error timeout updating http_429 http_500 http_502 http_503 http_504;
+        add_header X-Cache-Status $upstream_cache_status always;
+    }
+
+    # Single-page app: unknown paths (e.g. /drivers/norris on a hard refresh)
+    # are client-side routes, so serve index.html. index.html itself must
+    # always be revalidated so users pick up new deploys.
+    location / {
+        expires -1;
+        try_files $uri $uri/ /index.html;
+    }
+}
