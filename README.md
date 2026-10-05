@@ -53,13 +53,13 @@ The app ships as a small, self-contained image: a multi-stage build (Node builds
 ```bash
 # build and run
 docker build -t apex .
-docker run --rm -p 8080:8080 apex
+docker run --rm -p 8081:8080 apex
 
 # or with Compose
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>.
+Then open <http://localhost:8081>. (The container listens on 8080 internally; the `8081:8080` mapping publishes it on host port 8081. Change the left-hand number to use a different host port.)
 
 What the image does:
 
