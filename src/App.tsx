@@ -34,9 +34,7 @@ function App() {
         </Link>
         <div className="header-right">
           <nav>
-            <NavLink to="/" end>
-              Dashboard
-            </NavLink>
+            <NavLink to="/" end>Dashboard</NavLink>
             <NavLink to="/standings">Standings</NavLink>
             <NavLink to="/races">Races</NavLink>
             <NavLink to="/circuits">Circuits</NavLink>
